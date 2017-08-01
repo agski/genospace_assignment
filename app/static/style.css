@@ -1,0 +1,33 @@
+form {
+	display: block;
+	text-align: center;
+}
+
+h1 {
+	display:block;
+	text-align: center;
+}
+
+table {
+	margin-left: auto;
+	margin-right: auto;
+}
+label {
+	display: block;
+	text-align: center;
+	padding-top: 2.5%;
+}
+thead {
+	display:table-header-group;
+}
+p{
+	display:block;
+	text-align: center;
+}
+html * {
+	font-family: Arial;
+}
+tr:hover td{
+	background-color: lightblue;
+	cursor:default;
+}

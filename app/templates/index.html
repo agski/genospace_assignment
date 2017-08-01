@@ -1,0 +1,92 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css') }}">
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
+	<title>Drug Search Database</title>
+	<h1>Drug Search Database</h1>
+</head>
+<body>
+	<p>Enter a query and select a suggestion to see more details</p>
+	<form action='/' method="POST">
+		<input type="text" id='query' name='query'>
+	</form>
+	<label>Selection details</label>
+	<table id='selections'>
+		<thead>
+		<tr>
+			<th>Name</th>
+			<th>Mechanisms</th>
+			<th>Link</th>
+			<th>Name codes</th>
+			<th>Name brands</th>
+			<th>Name generics</th>
+			<th>Development summaries</th>
+			<th></th>
+		</tr>
+		</thead>
+	</table>
+	<label>Suggestions</label>
+	<table id='suggestions'>
+		<thead>
+		<tr>
+			<th>Match Type</th>
+			<th>Name</th>
+		</tr>
+		</thead>
+	</table>
+
+
+	</table>
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('#query').keyup(function() {
+				$.ajax({
+					type:'POST',
+					url: '/autosuggest',
+					data: $('#query').serialize(),
+					success: function(response) {
+						$('#suggestions .opt').remove();
+						$.each(response, function(index,value){
+							var tr = $('<tr/>').append(
+							$('<td/>').text(value['type_of']),
+							$('<td/>').text(value['name']));
+							tr.attr('id',value['url']);
+							tr.attr('class','opt')
+							$('#suggestions').append(tr);
+							});
+					},
+					error: function(error) {
+						alert(error)
+					}
+				});
+			});
+			$("#suggestions").on('click','.opt', function() {
+				$.ajax({
+					type:'POST',
+					url: $(this).attr('id'),
+					success: function(response) {
+						$('#selections .data').remove();
+						$.each(response, function(index,value){
+							var url = $('<a/>', {
+								text:'link',
+								href:value['url'],
+								target:'_blank'
+							});
+							var tr = $('<tr/>').append(
+							$('<td/>').text(value['name']),
+							$('<td/>').text(value['mechanisms']),
+							$('<td/>').html(url));
+							tr.attr('class','data')
+							$('#selections').append(tr);
+							});
+					},
+					error: function(error) {
+						alert(error)
+					}
+				});
+
+			});
+		});
+	</script>
+</body>
